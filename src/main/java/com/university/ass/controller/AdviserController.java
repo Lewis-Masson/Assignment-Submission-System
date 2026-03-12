@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.university.ass.service.AssignmentService;
 
 @Controller
 @RequestMapping("/adviser")
@@ -36,6 +37,9 @@ public class AdviserController {
 
     @Autowired
     private AssignmentEventPublisher eventPublisher;
+    
+    @Autowired
+    private AssignmentService assignmentService;
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
@@ -57,17 +61,26 @@ public class AdviserController {
         return "adviser/edit";
     }
 
-    @PostMapping("/edit/{id}")
-    public String editAssignment(@PathVariable int id,
-                                  @ModelAttribute Assignment assignment,
-                                  HttpSession session) {
-        User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/login";
-        assignment.setAssignmentId(id);
-        Assignment updated = updateAssignment.execute(assignment, user);
+@PostMapping("/edit/{id}")
+public String editAssignment(@PathVariable int id,
+                              @ModelAttribute Assignment assignment,
+                              HttpSession session) {
+    User user = (User) session.getAttribute("loggedInUser");
+    if (user == null) return "redirect:/login";
+
+    assignmentService.findById(id).ifPresent(existing -> {
+        existing.setCourseId(assignment.getCourseId());
+        existing.setCreditUnits(assignment.getCreditUnits());
+        existing.setSession(assignment.getSession());
+        existing.setTerm(assignment.getTerm());
+        existing.setAdditionalInfo(assignment.getAdditionalInfo());
+        existing.setStatus(assignment.getStatus());
+        Assignment updated = updateAssignment.execute(existing, user);
         eventPublisher.notifyObservers(updated, user);
-        return "redirect:/adviser/dashboard?updated";
-    }
+    });
+
+    return "redirect:/adviser/dashboard?updated";
+}
 
     @GetMapping("/delete/{id}")
     public String deleteAssignment(@PathVariable int id, HttpSession session) {

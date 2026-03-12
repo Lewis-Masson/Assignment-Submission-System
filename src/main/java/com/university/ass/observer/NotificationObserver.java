@@ -20,17 +20,12 @@ public class NotificationObserver implements AssignmentObserver {
     @Override
     public void onAssignmentUpdated(Assignment assignment, User updatedBy) {
         if (updatedBy.getRole() == User.Role.ADVISER) {
-            // Notify the student
             notificationService.createNotification(
                 assignment.getStudent(),
                 "Your assignment (Ref: " + assignment.getReferenceNumber() + ") has been updated by your course adviser."
             );
         } else {
-            // Notify all advisers
-            List<User> advisers = userService.findAllStudents().stream()
-                .filter(u -> u.getRole() == User.Role.ADVISER)
-                .toList();
-
+            List<User> advisers = userService.findAllAdvisers();
             for (User adviser : advisers) {
                 notificationService.createNotification(
                     adviser,

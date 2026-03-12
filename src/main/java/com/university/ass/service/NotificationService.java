@@ -34,4 +34,10 @@ public class NotificationService {
             notificationRepository.save(n);
         });
     }
+
+    public void markAllAsRead(User recipient) {
+        List<Notification> notifications = notificationRepository.findByRecipientAndIsReadFalse(recipient);
+        notifications.forEach(n -> n.setRead(true));
+        notificationRepository.saveAll(notifications);
+    }
 }

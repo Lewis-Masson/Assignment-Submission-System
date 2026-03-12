@@ -30,6 +30,12 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public List<User> findAllAdvisers() {
+        return userRepository.findAll().stream()
+                .filter(u -> u.getRole() == User.Role.ADVISER)
+                .toList();
+    }
+
     public List<User> findAllStudents() {
         return userRepository.findAll().stream()
                 .filter(u -> u.getRole() == User.Role.STUDENT)

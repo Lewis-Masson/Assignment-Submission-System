@@ -8,7 +8,6 @@ import com.university.ass.service.AssignmentService;
 import com.university.ass.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.util.Optional;
 
 @Component
 public class UpdateAssignment {
@@ -25,20 +24,16 @@ public class UpdateAssignment {
     public Assignment execute(Assignment updatedAssignment, User updatedBy) {
         Assignment saved = assignmentService.updateAssignment(updatedAssignment);
 
-        // Notify the other party
-        User recipient;
-        String message;
-
         if (updatedBy.getRole() == User.Role.ADVISER) {
-            recipient = saved.getStudent();
-            message = "Your assignment submission (Ref: " + saved.getReferenceNumber() + ") has been updated by your course adviser.";
+            // Notify the student
+            notificationService.createNotification(
+                    saved.getStudent(),
+                    "Your assignment (Ref: " + saved.getReferenceNumber() + ") has been updated by your course adviser."
+            );
         } else {
-            // Need to notify all advisers - handled in controller
-            recipient = updatedBy;
-            message = "Student " + updatedBy.getFirstName() + " " + updatedBy.getLastName() + " updated assignment (Ref: " + saved.getReferenceNumber() + ").";
+            // Notify all advisers
+            // This is handled by NotificationObserver via eventPublisher
         }
-
-        notificationService.createNotification(recipient, message);
 
         // Audit log
         AuditLog log = new AuditLog();
@@ -50,4 +45,5 @@ public class UpdateAssignment {
 
         return saved;
     }
+
 }

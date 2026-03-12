@@ -7,12 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.university.ass.service.NotificationService;
 
 @Controller
 public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/")
     public String home() {
@@ -51,6 +55,16 @@ public class AuthController {
     public String registerPage(Model model) {
         model.addAttribute("user", new User());
         return "register";
+    }
+
+    @GetMapping("/notifications/clear")
+    public String clearNotifications(HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        notificationService.markAllAsRead(user);
+        return "redirect:/adviser/dashboard";
     }
 
     @PostMapping("/register")
