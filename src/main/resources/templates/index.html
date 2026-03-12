@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Submission System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #e0e0ff;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #a0a0cc;
+        }
+        .buttons a {
+            display: inline-block;
+            padding: 14px 40px;
+            margin: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-login {
+            background: #4a4af0;
+            color: white;
+        }
+        .btn-login:hover { background: #3a3ad0; }
+        .btn-register {
+            background: transparent;
+            color: #4a4af0;
+            border: 2px solid #4a4af0;
+        }
+        .btn-register:hover { background: #4a4af0; color: white; }
+        footer {
+            position: absolute;
+            bottom: 20px;
+            color: #606080;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Assignment Submission System</h1>
+        <p>Submit and manage your university assignments in one place.</p>
+        <div class="buttons">
+            <a href="/login" class="btn-login">Login</a>
+            <a href="/register" class="btn-register">Register</a>
+        </div>
+    </div>
+    <footer>University Assignment Submission System &copy; 2026</footer>
+</body>
+</html>
