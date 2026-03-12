@@ -37,14 +37,16 @@ public class AdviserController {
 
     @Autowired
     private AssignmentEventPublisher eventPublisher;
-    
+
     @Autowired
     private AssignmentService assignmentService;
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         model.addAttribute("user", user);
         model.addAttribute("assignments", readAssignment.getAllAssignments(user));
@@ -56,36 +58,42 @@ public class AdviserController {
     @GetMapping("/edit/{id}")
     public String editPage(@PathVariable int id, HttpSession session, Model model) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            return "redirect:/login";
+        }
         readAssignment.getById(id, user).ifPresent(a -> model.addAttribute("assignment", a));
         return "adviser/edit";
     }
 
-@PostMapping("/edit/{id}")
-public String editAssignment(@PathVariable int id,
-                              @ModelAttribute Assignment assignment,
-                              HttpSession session) {
-    User user = (User) session.getAttribute("loggedInUser");
-    if (user == null) return "redirect:/login";
+    @PostMapping("/edit/{id}")
+    public String editAssignment(@PathVariable int id,
+            @ModelAttribute Assignment assignment,
+            HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
 
-    assignmentService.findById(id).ifPresent(existing -> {
-        existing.setCourseId(assignment.getCourseId());
-        existing.setCreditUnits(assignment.getCreditUnits());
-        existing.setSession(assignment.getSession());
-        existing.setTerm(assignment.getTerm());
-        existing.setAdditionalInfo(assignment.getAdditionalInfo());
-        existing.setStatus(assignment.getStatus());
-        Assignment updated = updateAssignment.execute(existing, user);
-        eventPublisher.notifyObservers(updated, user);
-    });
+        assignmentService.findById(id).ifPresent(existing -> {
+            existing.setCourseId(assignment.getCourseId());
+            existing.setCreditUnits(assignment.getCreditUnits());
+            existing.setSession(assignment.getSession());
+            existing.setTerm(assignment.getTerm());
+            existing.setAdditionalInfo(assignment.getAdditionalInfo());
+            existing.setStatus(assignment.getStatus());
+            Assignment updated = updateAssignment.execute(existing, user);
+            eventPublisher.notifyObservers(updated, user);
+        });
 
-    return "redirect:/adviser/dashboard?updated";
-}
+        return "redirect:/adviser/dashboard?updated";
+    }
 
     @GetMapping("/delete/{id}")
     public String deleteAssignment(@PathVariable int id, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            return "redirect:/login";
+        }
         deleteAssignment.execute(id, user);
         return "redirect:/adviser/dashboard?deleted";
     }
@@ -93,17 +101,31 @@ public String editAssignment(@PathVariable int id,
     @GetMapping("/reset-password")
     public String resetPasswordPage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("students", userService.findAllStudents());
         return "adviser/reset-password";
     }
 
+    @GetMapping("/notifications/clear")
+    public String clearNotifications(HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        notificationService.markAllAsRead(user);
+        return "redirect:/adviser/dashboard";
+    }
+
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam int studentId,
-                                 @RequestParam String newPassword,
-                                 HttpSession session) {
+            @RequestParam String newPassword,
+            HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            return "redirect:/login";
+        }
         userService.resetPassword(studentId, newPassword);
         return "redirect:/adviser/dashboard?passwordReset";
     }
