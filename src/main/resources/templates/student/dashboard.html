@@ -192,14 +192,14 @@
 
             <!-- Notifications -->
             <div class="notifications" th:if="${notifications != null and !notifications.empty}">
-                <h3>🔔 Notifications <a href="/adviser/notifications/clear" style="font-size:0.8rem; color:#a0a0cc; margin-left:15px;">Mark all as read</a></h3>
+                <h3>🔔 Notifications <a href="/student/notifications/clear" style="font-size:0.8rem; color:#a0a0cc; margin-left:15px;">Mark all as read</a></h3>
                 <div th:each="n : ${notifications}" class="notification-item">
                     <span th:text="${n.message}"></span>
                     <span style="display:block; font-size:0.75rem; color:#606080; margin-top:4px;"
                           th:text="${#temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
                 </div>
             </div>
-            <a href="//student/notifications/clear" class="btn">+ Submit New Assignment</a>
+            <a href="/student/submit" class="btn">+ Submit New Assignment</a>
 
             <!-- Assignments Table -->
             <table>
