@@ -11,6 +11,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
 
+    @Column(length = 20)
+    private String staffId;
+
     @Column(nullable = false, length = 50)
     private String firstName;
 
@@ -138,6 +141,14 @@ public class User {
 
     public void setMatriculationNumber(String matriculationNumber) {
         this.matriculationNumber = matriculationNumber;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
 }

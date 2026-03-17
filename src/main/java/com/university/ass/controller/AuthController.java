@@ -52,8 +52,7 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String registerPage(Model model) {
-        model.addAttribute("user", new User());
+    public String registerPage() {
         return "register";
     }
 
@@ -67,12 +66,36 @@ public class AuthController {
         return "redirect:/adviser/dashboard";
     }
 
-    @PostMapping("/register")
-    public String register(@ModelAttribute User user, Model model) {
+    @GetMapping("/register/student")
+    public String registerStudentPage(Model model) {
+        model.addAttribute("user", new User());
+        return "register-student";
+    }
+
+    @PostMapping("/register/student")
+    public String registerStudent(@ModelAttribute User user, Model model) {
         if (userService.findByEmail(user.getEmail()).isPresent()) {
             model.addAttribute("error", "Email already registered");
-            return "register";
+            return "register-student";
         }
+        user.setRole(User.Role.STUDENT);
+        userService.registerUser(user);
+        return "redirect:/login?registered";
+    }
+
+    @GetMapping("/register/adviser")
+    public String registerAdviserPage(Model model) {
+        model.addAttribute("user", new User());
+        return "register-adviser";
+    }
+
+    @PostMapping("/register/adviser")
+    public String registerAdviser(@ModelAttribute User user, Model model) {
+        if (userService.findByEmail(user.getEmail()).isPresent()) {
+            model.addAttribute("error", "Email already registered");
+            return "register-adviser";
+        }
+        user.setRole(User.Role.ADVISER);
         userService.registerUser(user);
         return "redirect:/login?registered";
     }
