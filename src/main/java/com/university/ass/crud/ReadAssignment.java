@@ -25,9 +25,9 @@ public class ReadAssignment {
     }
 
     public List<Assignment> getStudentAssignments(User student, User requestedBy) {
-        logAction(requestedBy, student.getUserId());
-        return assignmentService.findAssignmentsByStudent(student);
-    }
+    logAction(requestedBy, student.getUserId());
+    return assignmentService.findAssignmentsByStudent(student);
+}
 
     public Optional<Assignment> getById(int id, User requestedBy) {
         logAction(requestedBy, id);
