@@ -24,17 +24,6 @@ public class UpdateAssignment {
     public Assignment execute(Assignment updatedAssignment, User updatedBy) {
         Assignment saved = assignmentService.updateAssignment(updatedAssignment);
 
-        if (updatedBy.getRole() == User.Role.ADVISER) {
-            // Notify the student
-            notificationService.createNotification(
-                    saved.getStudent(),
-                    "Your assignment (Ref: " + saved.getReferenceNumber() + ") has been updated by your course adviser."
-            );
-        } else {
-            // Notify all advisers
-            // This is handled by NotificationObserver via eventPublisher
-        }
-
         // Audit log
         AuditLog log = new AuditLog();
         log.setUser(updatedBy);
