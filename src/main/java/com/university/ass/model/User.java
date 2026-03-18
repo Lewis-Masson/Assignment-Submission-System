@@ -20,6 +20,17 @@ public class User {
     @Column(nullable = false, length = 50)
     private String lastName;
 
+    @Column(length = 20)
+    private String mobileNumber;
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
