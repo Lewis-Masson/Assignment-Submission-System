@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Assignment - ASS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #16213e;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .navbar h1 { font-size: 1.2rem; color: #e0e0ff; }
+        .navbar a { color: #a0a0cc; text-decoration: none; font-size: 0.9rem; }
+        .navbar a:hover { color: white; }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        h2 { color: #e0e0ff; margin-bottom: 8px; }
+        .subtitle { color: #a0a0cc; font-size: 0.9rem; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #a0a0cc;
+            font-size: 0.9rem;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #2a2a5e;
+            background: #0f3460;
+            color: white;
+            font-size: 1rem;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #f0a04a;
+        }
+        select option { background: #0f3460; }
+        textarea { resize: vertical; min-height: 100px; }
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 13px;
+            background: #b07a10;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover { background: #906a00; }
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #a0a0cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .btn-back:hover { color: white; }
+        .hint { font-size: 0.8rem; color: #606080; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Assignment Submission System</h1>
+        <div>
+            <a href="/adviser/dashboard">Dashboard</a>
+            &nbsp;&nbsp;
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="/adviser/dashboard" class="btn-back">← Back to Dashboard</a>
+        <div class="card">
+            <h2>Create Assignment Submission for Student</h2>
+            <p class="subtitle">Select a student and fill in the assignment details below.</p>
+
+            <form method="post" action="/adviser/create" th:object="${assignment}">
+                <div class="form-group">
+                    <label>Select Student</label>
+                    <select name="studentId" required>
+                        <option value="">-- Select a student --</option>
+                        <option th:each="s : ${students}"
+                                th:value="${s.userId}"
+                                th:text="${s.firstName + ' ' + s.lastName + ' (' + s.email + ')'}">
+                        </option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Course ID</label>
+                        <input type="text" th:field="*{courseId}" placeholder="e.g. CS101"
+                               minlength="2" maxlength="20" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Credit Units</label>
+                        <input type="number" th:field="*{creditUnits}" placeholder="e.g. 15"
+                               min="1" max="120" required/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Session</label>
+                        <input type="text" th:field="*{session}" placeholder="e.g. 2024/2025"
+                               minlength="4" maxlength="20" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Term</label>
+                        <input type="text" th:field="*{term}" placeholder="e.g. Semester 1"
+                               minlength="2" maxlength="20" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Information</label>
+                    <textarea th:field="*{additionalInfo}" placeholder="Any additional details..."></textarea>
+                    <p class="hint">Optional — include any relevant notes for the student.</p>
+                </div>
+                <button type="submit" class="btn">Create Assignment Submission for Student</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

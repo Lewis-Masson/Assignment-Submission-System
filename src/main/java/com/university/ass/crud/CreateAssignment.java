@@ -37,21 +37,18 @@ public class CreateAssignment {
         log.setEntityId(saved.getAssignmentId());
         auditLogRepository.save(log);
 
-        // Notify the student who submitted
+        // Notify the student
         notificationService.createNotification(
-            saved.getStudent(),
-            "Your assignment has been submitted successfully. Reference: " + saved.getReferenceNumber()
+                saved.getStudent(),
+                "An assignment submission has been created for you by your course adviser. Reference: " + saved.getReferenceNumber()
         );
 
-        // Notify all advisers
-        List<User> advisers = userService.findAllAdvisers();
-        for (User adviser : advisers) {
-            notificationService.createNotification(
-                adviser,
-                "Student " + saved.getStudent().getFirstName() + " " + saved.getStudent().getLastName()
-                + " submitted a new assignment. Reference: " + saved.getReferenceNumber()
-            );
-        }
+        // Notify the adviser who created it
+        notificationService.createNotification(
+                createdBy,
+                "Assignment (Ref: " + saved.getReferenceNumber() + ") was created for student "
+                + saved.getStudent().getFirstName() + " " + saved.getStudent().getLastName()
+        );
 
         return saved;
     }

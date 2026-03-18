@@ -191,11 +191,13 @@
                 <h2 th:text="'Hello, ' + ${user.firstName} + ' ' + ${user.lastName}"></h2>
                 <p>Manage all student assignment submissions below.</p>
             </div>
-
+            <div class="actions">
+                <a href="/adviser/create" class="btn">+ Create Assignment Submission for Student</a>
+            </div>
             <div class="success-msg" th:if="${param.updated}">Assignment updated successfully!</div>
             <div class="success-msg" th:if="${param.deleted}">Assignment deleted successfully!</div>
             <div class="success-msg" th:if="${param.passwordReset}">Password reset successfully!</div>
-
+            <div class="success-msg" th:if="${param.created}">Assignment created successfully!</div>
             <!-- Notifications -->
             <div class="notifications" th:if="${notifications != null and !notifications.empty}">
                 <h3>🔔 Notifications <a href="/adviser/notifications/clear" style="font-size:0.8rem; color:#a0a0cc; margin-left:15px;">Mark all as read</a></h3>
