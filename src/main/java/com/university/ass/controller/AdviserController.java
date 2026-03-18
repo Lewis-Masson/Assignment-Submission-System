@@ -88,6 +88,32 @@ public class AdviserController {
         return "redirect:/adviser/dashboard?updated";
     }
 
+    @GetMapping("/create")
+    public String createPage(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("assignment", new Assignment());
+        model.addAttribute("students", userService.findAllStudents());
+        return "adviser/create";
+    }
+
+    @PostMapping("/create")
+    public String createAssignment(@ModelAttribute Assignment assignment,
+            @RequestParam int studentId,
+            HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        userService.findById(studentId).ifPresent(student -> {
+            assignment.setStudent(student);
+            createAssignment.execute(assignment, user);
+        });
+        return "redirect:/adviser/dashboard?created";
+    }
+
     @GetMapping("/delete/{id}")
     public String deleteAssignment(@PathVariable int id, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
