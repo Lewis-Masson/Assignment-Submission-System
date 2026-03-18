@@ -1,36 +1,83 @@
 # Assignment Submission System (ASS)
 
-A web-based university assignment submission system built with Java, Spring Boot and Thymeleaf. Supports two user roles — Student and Course Adviser — with full CRUD operations, notifications and audit logging.
+A web-based university assignment submission system built with Java, Spring Boot and Thymeleaf. Supports two user roles — Student and Course Adviser — with full CRUD operations, notifications, file uploads and audit logging.
+
+---
 
 ## Features
 
-- Account registration and login with role-based access (Student / Course Adviser)
-- Students can submit assignments and receive a generated reference number
-- Course Advisers can create, read, edit and delete all assignment submissions
-- Two-way Observer Pattern notifications — users are notified when their submissions are modified
-- Timestamped notifications and audit log for every action on the system
+**Account & Registration**
+- Role-based registration — separate forms for Student and Course Adviser
+- Study level selection (Undergraduate, Masters, PhD)
+- Funding source selection (SAAS, Student Loans Company, University Scholarships & Bursaries, UKRI for postgraduate)
+- Self-funding option — funding dropdown hidden if self-funded
+- Form validation throughout — email regex, password minimum 8 characters, mobile number UK format, 8-digit matriculation number (Student), staff ID (Adviser)
+- Login with role-based routing to the correct dashboard
 - Adviser can reset student passwords
-- Mark all notifications as read
-- Form validation throughout
+
+**Assignment Submissions**
+- Students can submit assignments and receive a unique generated reference number (ASS-XXXXXXXX)
+- Students can edit their own submissions
+- Course Advisers can create, read, edit and delete all student submissions
+- Every action (create, read, edit, delete) is timestamped and logged to the audit log
+
+**File Uploads**
+- Students can attach a Word or PDF document (max 2MB) to any assignment submission
+- Students can delete and resubmit a file at any time
+- Advisers can view and download all attached documents from the dashboard
+- Notifications sent on upload to both the student and all advisers
+
+**Notifications**
+- Two-way Observer Pattern notifications throughout
+- Notifications generated on: assignment created, edited, deleted and file uploaded
+- Students notified when an adviser creates or modifies their submission
+- Advisers notified when a student submits, edits or uploads a file
+- Mark all notifications as read on both dashboards
+- Timestamped notifications displayed on login
+
+---
 
 ## Tech Stack
 
-- **Backend**: Java 25, Spring Boot 3.x, Spring Security, Spring Data JPA
-- **Frontend**: Thymeleaf, HTML, CSS
-- **Database**: MySQL 8.0
-- **Build Tool**: Maven
-- **IDE**: Apache NetBeans 29
+| Layer        | Technology                              |
+|--------------|-----------------------------------------|
+| Language     | Java 25                                 |
+| Framework    | Spring Boot 3.x, Spring Security        |
+| Templates    | Thymeleaf                               |
+| Database     | MySQL 8.0                               |
+| ORM          | Spring Data JPA / Hibernate             |
+| Build Tool   | Maven                                   |
+| IDE          | Apache NetBeans 29                      |
+| Deployment   | Heroku via GitHub                       |
+
+---
 
 ## Project Structure
+
 ```
 src/main/java/com/university/ass/
 ├── model/          # Entity classes (User, Assignment, Notification, AuditLog)
 ├── repository/     # JPA repository interfaces
-├── service/        # Business logic
-├── controller/     # Web request handlers
-├── crud/           # Separate CRUD operation classes
-└── observer/       # Observer pattern for notifications
+├── service/        # Business logic (UserService, AssignmentService, NotificationService)
+├── controller/     # Web request handlers (AuthController, StudentController, AdviserController)
+├── crud/           # Separate CRUD operation classes (Create, Read, Update, Delete)
+└── observer/       # Observer Pattern (AssignmentObserver, NotificationObserver, AssignmentEventPublisher)
 ```
+
+---
+
+## Database
+
+Database name: `ass_db`
+
+| Table           | Description                                        |
+|-----------------|----------------------------------------------------|
+| `users`         | All users with role ENUM (STUDENT / ADVISER)       |
+| `assignments`   | Submitted assignments with reference numbers and file data (BLOB) |
+| `notifications` | Observer-generated notifications per user          |
+| `audit_log`     | Timestamped log of all system actions              |
+
+---
 
 ## Running Locally
 
@@ -39,29 +86,27 @@ src/main/java/com/university/ass/
 - MySQL 8.0
 - Java 25
 
-### Setup
-
-1. Clone the repository
-2. Create a MySQL database called `ass_db`
-3. Update `src/main/resources/application.properties` with your MySQL credentials
-4. In NetBeans right click the project → Properties → Actions → Run Project
-5. Set the Goal to `spring-boot:run`
-6. Run the project with F6
-
-The application will start at `http://localhost:8080`
+---
 
 ## Pages
 
-| Page | URL |
-|------|-----|
-| Landing | `/` |
-| Login | `/login` |
-| Register | `/register` |
-| Student Dashboard | `/student/dashboard` |
-| Submit Assignment | `/student/submit` |
-| Adviser Dashboard | `/adviser/dashboard` |
-| Reset Password | `/adviser/reset-password` |
+| Page                        | URL                        | Role    |
+|-----------------------------|----------------------------|---------|
+| Landing                     | `/`                        | Public  |
+| Login                       | `/login`                   | Public  |
+| Register (role selector)    | `/register`                | Public  |
+| Register — Student          | `/register/student`        | Public  |
+| Register — Course Adviser   | `/register/adviser`        | Public  |
+| Student Dashboard           | `/student/dashboard`       | Student |
+| Submit Assignment           | `/student/submit`          | Student |
+| Edit Assignment             | `/student/edit/{id}`       | Student |
+| Adviser Dashboard           | `/adviser/dashboard`       | Adviser |
+| Create Assignment           | `/adviser/create`          | Adviser |
+| Edit Assignment             | `/adviser/edit/{id}`       | Adviser |
+| Reset Student Password      | `/adviser/reset-password`  | Adviser |
+
+---
 
 ## Deployment
 
-Deployment to Heroku via GitHub — in progress.
+Deployment to Heroku via GitHub.
