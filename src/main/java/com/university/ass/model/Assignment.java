@@ -2,6 +2,8 @@ package com.university.ass.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import jakarta.persistence.Basic;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Table(name = "assignments")

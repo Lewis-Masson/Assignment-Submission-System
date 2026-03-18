@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.university.ass.service.AssignmentService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/adviser")
@@ -155,4 +158,20 @@ public class AdviserController {
         userService.resetPassword(studentId, newPassword);
         return "redirect:/adviser/dashboard?passwordReset";
     }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable int id, HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return assignmentService.findById(id).map(a -> {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + a.getFileName() + "\"")
+                    .contentType(MediaType.parseMediaType(a.getFileType()))
+                    .body(a.getFileData());
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
 }
