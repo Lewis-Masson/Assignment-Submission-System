@@ -170,6 +170,15 @@
                 text-align: center;
                 padding: 30px;
             }
+            .error-msg {
+                background: #4a1a1a;
+                color: #ff6666;
+                padding: 12px;
+                border-radius: 6px;
+                margin-bottom: 20px;
+                font-size: 0.9rem;
+            }
+
         </style>
     </head>
     <body>
@@ -189,6 +198,10 @@
 
             <div class="success-msg" th:if="${param.submitted}">Assignment submitted successfully!</div>
             <div class="success-msg" th:if="${param.updated}">Assignment updated successfully!</div>
+            <div class="success-msg" th:if="${param.fileuploaded}">File uploaded successfully!</div>
+            <div class="success-msg" th:if="${param.filedeleted}">File removed successfully.</div>
+            <div class="error-msg" th:if="${param.fileerror}">Only PDF or Word documents are allowed.</div>
+            <div class="error-msg" th:if="${param.filesizerror}">File must be under 2MB.</div>
 
             <!-- Notifications -->
             <div class="notifications" th:if="${notifications != null and !notifications.empty}">
@@ -213,6 +226,7 @@
                         <th>Status</th>
                         <th>Submitted</th>
                         <th>Actions</th>
+                        <th>File</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,10 +239,30 @@
                         <td th:text="${a.session}"></td>
                         <td th:text="${a.term}"></td>
                         <td th:text="${a.creditUnits}"></td>
-                        <td>
-                            <span class="status status-submitted" th:text="${a.status}"></span>
-                        </td>
+                        <td><span class="status status-submitted" th:text="${a.status}"></span></td>
                         <td th:text="${#temporals.format(a.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <div th:if="${a.fileName != null}">
+                                <a th:href="@{/student/download/{id}(id=${a.assignmentId})}"
+                                   style="color:#44cc44; font-size:0.85rem;"
+                                   th:text="${a.fileName}"></a>
+                                <br/>
+                                <a th:href="@{/student/delete-file/{id}(id=${a.assignmentId})}"
+                                   class="btn btn-danger"
+                                   style="margin-top:6px; font-size:0.75rem; padding:4px 10px;"
+                                   onclick="return confirm('Delete this file?')">Delete file</a>
+                            </div>
+                            <div th:if="${a.fileName == null}">
+                                <form th:action="@{/student/upload/{id}(id=${a.assignmentId})}"
+                                      method="post" enctype="multipart/form-data"
+                                      style="display:flex; gap:6px; align-items:center;">
+                                    <input type="file" name="file" accept=".pdf,.doc,.docx"
+                                           style="font-size:0.8rem; padding:4px; width:auto;"/>
+                                    <button type="submit" class="btn btn-secondary"
+                                            style="padding:6px 12px; font-size:0.8rem; white-space:nowrap;">Upload</button>
+                                </form>
+                            </div>
+                        </td>
                         <td>
                             <a th:href="@{/student/edit/{id}(id=${a.assignmentId})}" class="btn btn-secondary">Edit</a>
                         </td>
