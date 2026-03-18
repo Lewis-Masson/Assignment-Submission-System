@@ -56,6 +56,28 @@ public class User {
     @Column(length = 8)
     private String matriculationNumber;
 
+    @Column(length = 50)
+    private String studyLevel;
+
+    @Column(length = 100)
+    private String fundingSource;
+
+    public String getStudyLevel() {
+        return studyLevel;
+    }
+
+    public void setStudyLevel(String studyLevel) {
+        this.studyLevel = studyLevel;
+    }
+
+    public String getFundingSource() {
+        return fundingSource;
+    }
+
+    public void setFundingSource(String fundingSource) {
+        this.fundingSource = fundingSource;
+    }
+
     public enum Role {
         STUDENT, ADVISER
     }

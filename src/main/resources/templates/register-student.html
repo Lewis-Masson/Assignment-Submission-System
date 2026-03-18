@@ -166,6 +166,71 @@
                     <input type="text" th:field="*{courseId}" placeholder="e.g. CS101"
                            minlength="2" maxlength="20" required/>
                 </div>
+                <div class="form-group">
+                    <label>Study Level</label>
+                    <select th:field="*{studyLevel}" id="studyLevel" onchange="updateFunding()" required>
+                        <option value="">-- Select study level --</option>
+                        <option value="Undergraduate">Undergraduate</option>
+                        <option value="Masters">Masters</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Are you self-funding?</label>
+                    <select id="selfFunding" onchange="updateFunding()" required>
+                        <option value="">-- Select --</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="fundingSourceGroup" style="display:none;">
+                    <label>Funding Source</label>
+                    <select th:field="*{fundingSource}" id="fundingSource">
+                        <option value="">-- Select funding source --</option>
+                        <option value="SAAS">SAAS</option>
+                        <option value="Student Loans Company">Student Loans Company</option>
+                        <option value="University Scholarships & Bursaries">University Scholarships &amp; Bursaries</option>
+                        <option value="UK Research and Innovation" id="ukriOption" style="display:none;">
+                            UK Research and Innovation (postgraduate only)
+                        </option>
+                    </select>
+                </div>
+
+                <script>
+                    function updateFunding() {
+                        const studyLevel = document.getElementById('studyLevel').value;
+                        const selfFunding = document.getElementById('selfFunding').value;
+                        const fundingGroup = document.getElementById('fundingSourceGroup');
+                        const ukriOption = document.getElementById('ukriOption');
+                        const fundingSelect = document.getElementById('fundingSource');
+
+                        // Show/hide UKRI based on study level
+                        const isPostgrad = studyLevel === 'Masters' || studyLevel === 'PhD';
+                        ukriOption.style.display = isPostgrad ? 'block' : 'none';
+
+                        // If UKRI was selected but user switched to undergrad, reset
+                        if (!isPostgrad && fundingSelect.value === 'UK Research and Innovation') {
+                            fundingSelect.value = '';
+                        }
+
+                        // Show/hide funding section based on self-funding answer
+                        if (selfFunding === 'no') {
+                            fundingGroup.style.display = 'block';
+                            fundingSelect.required = true;
+                        } else {
+                            fundingGroup.style.display = 'none';
+                            fundingSelect.required = false;
+                            fundingSelect.value = '';
+                        }
+
+                        // If self-funding, store that as the funding source
+                        if (selfFunding === 'yes') {
+                            fundingSelect.value = 'Self-funded';
+                        }
+                    }
+                </script>
                 <button type="submit" class="btn">Create Student Account</button>
             </form>
         </div>
