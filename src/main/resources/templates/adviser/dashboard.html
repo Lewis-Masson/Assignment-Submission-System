@@ -234,10 +234,18 @@
                         <td th:text="${a.session}"></td>
                         <td th:text="${a.term}"></td>
                         <td th:text="${a.creditUnits}"></td>
-                        <td>
-                            <span class="status status-submitted" th:text="${a.status}"></span>
-                        </td>
+                        <td><span class="status status-submitted" th:text="${a.status}"></span></td>
                         <td th:text="${#temporals.format(a.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <div th:if="${a.fileName != null}">
+                                <a th:href="@{/adviser/download/{id}(id=${a.assignmentId})}"
+                                   style="color:#44cc44; font-size:0.85rem;"
+                                   th:text="${a.fileName}"></a>
+                            </div>
+                            <div th:if="${a.fileName == null}">
+                                <span style="color:#606080; font-size:0.85rem;">No file</span>
+                            </div>
+                        </td>
                         <td>
                             <div class="td-actions">
                                 <a th:href="@{/adviser/edit/{id}(id=${a.assignmentId})}" class="btn btn-warning">Edit</a>
@@ -246,8 +254,3 @@
                             </div>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-    </body>
-</html>

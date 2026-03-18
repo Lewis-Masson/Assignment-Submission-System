@@ -13,6 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.university.ass.service.AssignmentService;
+import com.university.ass.service.UserService;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,6 +42,9 @@ public class StudentController {
 
     @Autowired
     private AssignmentService assignmentService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
@@ -148,11 +154,26 @@ public class StudentController {
                 existing.setFileName(file.getOriginalFilename());
                 existing.setFileType(contentType);
                 assignmentService.updateAssignment(existing);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+                // Notify the student
+                notificationService.createNotification(
+                        user,
+                        "Your file \"" + file.getOriginalFilename() + "\" has been attached to assignment (Ref: " + existing.getReferenceNumber() + ")."
+                );
+
+                // Notify all advisers
+                List<User> advisers = userService.findAllAdvisers();
+                for (User adviser : advisers) {
+                    notificationService.createNotification(
+                            adviser,
+                            "Student " + user.getFirstName() + " " + user.getLastName()
+                            + " attached a document to assignment (Ref: " + existing.getReferenceNumber() + ")."
+                    );
+                }
+
+            } catch (IOException e) {
             }
         });
-
         return "redirect:/student/dashboard?fileuploaded";
     }
 
