@@ -13,6 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.university.ass.service.AssignmentService;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/student")
@@ -111,6 +115,77 @@ public class StudentController {
         });
 
         return "redirect:/student/dashboard?updated";
+    }
+
+    //File storage method
+    @PostMapping("/upload/{id}")
+    public String uploadFile(@PathVariable int id,
+            @RequestParam("file") MultipartFile file,
+            HttpSession session,
+            Model model) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Validate file type
+        String contentType = file.getContentType();
+        if (contentType == null
+                || (!contentType.equals("application/pdf")
+                && !contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                && !contentType.equals("application/msword"))) {
+            return "redirect:/student/dashboard?fileerror";
+        }
+
+        // Validate file size (2MB)
+        if (file.getSize() > 2 * 1024 * 1024) {
+            return "redirect:/student/dashboard?filesizerror";
+        }
+
+        assignmentService.findById(id).ifPresent(existing -> {
+            try {
+                existing.setFileData(file.getBytes());
+                existing.setFileName(file.getOriginalFilename());
+                existing.setFileType(contentType);
+                assignmentService.updateAssignment(existing);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        return "redirect:/student/dashboard?fileuploaded";
+    }
+
+    @GetMapping("/delete-file/{id}")
+    public String deleteFile(@PathVariable int id, HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        assignmentService.findById(id).ifPresent(existing -> {
+            existing.setFileData(null);
+            existing.setFileName(null);
+            existing.setFileType(null);
+            assignmentService.updateAssignment(existing);
+        });
+
+        return "redirect:/student/dashboard?filedeleted";
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable int id, HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return assignmentService.findById(id).map(a -> {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + a.getFileName() + "\"")
+                    .contentType(MediaType.parseMediaType(a.getFileType()))
+                    .body(a.getFileData());
+        }).orElse(ResponseEntity.notFound().build());
     }
 
 }
