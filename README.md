@@ -1,17 +1,17 @@
 # Assignment Submission System (ASS)
 
-A web-based university assignment submission system built with Java, Spring Boot and Thymeleaf. Supports two user roles — Student and Course Adviser — with full CRUD operations, notifications, file uploads and audit logging.
+A web-based university assignment submission system built with Java, Spring Boot and Thymeleaf. Supports two user roles, Student and Course Adviser, with full CRUD operations, notifications, file uploads and audit logging.
 
 ---
 
 ## Features
 
 **Account & Registration**
-- Role-based registration — separate forms for Student and Course Adviser
+- Role-based registration, separate forms for Student and Course Adviser
 - Study level selection (Undergraduate, Masters, PhD)
 - Funding source selection (SAAS, Student Loans Company, University Scholarships & Bursaries, UKRI for postgraduate)
 - Self-funding option — funding dropdown hidden if self-funded
-- Form validation throughout — email regex, password minimum 8 characters, mobile number UK format, 8-digit matriculation number (Student), staff ID (Adviser)
+- Form validation throughout email regex, password minimum 8 characters, mobile number UK format, 8-digit matriculation number (Student), staff ID (Adviser)
 - Login with role-based routing to the correct dashboard
 - Adviser can reset student passwords
 
