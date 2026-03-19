@@ -10,7 +10,7 @@ A web-based university assignment submission system built with Java, Spring Boot
 - Role-based registration, separate forms for Student and Course Adviser
 - Study level selection (Undergraduate, Masters, PhD)
 - Funding source selection (SAAS, Student Loans Company, University Scholarships & Bursaries, UKRI for postgraduate)
-- Self-funding option — funding dropdown hidden if self-funded
+- Self-funding option, funding dropdown hidden if self-funded
 - Form validation throughout email regex, password minimum 8 characters, mobile number UK format, 8-digit matriculation number (Student), staff ID (Adviser)
 - Login with role-based routing to the correct dashboard
 - Adviser can reset student passwords
