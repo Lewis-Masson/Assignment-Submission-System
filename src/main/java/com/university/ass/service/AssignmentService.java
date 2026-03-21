@@ -8,16 +8,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AssignmentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
 
     @Autowired
     private AssignmentRepository assignmentRepository;
 
     public Assignment createAssignment(Assignment assignment) {
         assignment.setReferenceNumber(generateReference());
-        return assignmentRepository.save(assignment);
+        logger.info("Creating assignment with reference: {}", assignment.getReferenceNumber());
+        Assignment saved = assignmentRepository.save(assignment);
+        logger.info("Assignment created successfully with ID: {}", saved.getAssignmentId());
+        return saved;
     }
 
     public List<Assignment> findAllAssignments() {
@@ -33,11 +40,16 @@ public class AssignmentService {
     }
 
     public Assignment updateAssignment(Assignment assignment) {
-        return assignmentRepository.save(assignment);
+        logger.info("Updating assignment ID: {}", assignment.getAssignmentId());
+        Assignment saved = assignmentRepository.save(assignment);
+        logger.info("Assignment updated successfully. Reference: {}", saved.getReferenceNumber());
+        return saved;
     }
 
     public void deleteAssignment(int id) {
+        logger.warn("Deleting assignment with ID: {}", id);
         assignmentRepository.deleteById(id);
+        logger.info("Assignment ID: {} deleted successfully", id);
     }
 
     private String generateReference() {
