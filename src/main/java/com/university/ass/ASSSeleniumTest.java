@@ -65,8 +65,13 @@ public class ASSSeleniumTest {
                     .sendKeys("Selenium automated test submission");
             System.out.println("Assignment form filled");
 
-            // STEP 6: Submit the form
-            driver.findElement(By.cssSelector("button[type='submit']")).click();
+// STEP 6: Submit the form
+            WebElement submitAssignment = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.cssSelector("button[type='submit']")
+                    )
+            );
+            submitAssignment.click();
             System.out.println("Assignment submitted");
 
             // STEP 7: Verify submission was successful
