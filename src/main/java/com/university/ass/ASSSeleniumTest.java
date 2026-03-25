@@ -58,7 +58,7 @@ public class ASSSeleniumTest {
             // STEP 5: Fill in the assignment submission form
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("courseId")))
                     .sendKeys("CS101");
-            driver.findElement(By.name("creditUnits")).sendKeys("15");
+            driver.findElement(By.name("creditUnits")).sendKeys("120");
             driver.findElement(By.name("session")).sendKeys("2024/2025");
             driver.findElement(By.name("term")).sendKeys("Semester 1");
             driver.findElement(By.name("additionalInfo"))
