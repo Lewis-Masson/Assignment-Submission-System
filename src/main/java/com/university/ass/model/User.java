@@ -184,4 +184,19 @@ public class User {
         this.staffId = staffId;
     }
 
+    // Password validation method
+    public boolean checkPassword(String password) {
+        // Check length is between 6 and 10
+        if (password == null || password.length() < 6 || password.length() > 10) {
+            return false;
+        }
+        // Check first three characters are letters
+        for (int i = 0; i < 3; i++) {
+            if (!Character.isLetter(password.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
