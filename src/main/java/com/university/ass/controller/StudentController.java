@@ -143,8 +143,8 @@ public class StudentController {
             return "redirect:/student/dashboard?fileerror";
         }
 
-        // Validate file size (2MB)
-        if (file.getSize() > 2 * 1024 * 1024) {
+        // Validate file size (1MB)
+        if (file.getSize() > 1 * 1024 * 1024) {
             return "redirect:/student/dashboard?filesizerror";
         }
 
