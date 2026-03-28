@@ -143,9 +143,10 @@ public class Assignment {
         this.updatedAt = updatedAt;
     }
 
-//File storage using BLOB
-    @Column
+// File storage using BLOB
     @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(name = "file_data", columnDefinition = "LONGBLOB")
     private byte[] fileData;
 
     @Column(length = 255)
